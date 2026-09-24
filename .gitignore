@@ -2,3 +2,7 @@
 .DS_Store
 Claude outputs/
 tree pictures/
+
+# Blender source files stay local
+*.blend
+*.blend[0-9]*

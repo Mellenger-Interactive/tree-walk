@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>C&amp;W Campus Tree Walk · Centre for Mindfulness</title>
+  <meta name="description" content="An interactive 3D map of the 14-tree walk around the BC Children's &amp; Women's campus.">
+  <meta name="theme-color" content="#0072bc">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,700;0,6..12,800;1,6..12,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="tw">
+    <header class="tw-hero">
+      <svg class="tw-hills" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 150 C180 70 300 60 470 120 C600 165 700 90 860 70 C1040 48 1180 120 1440 90 L1440 220 L0 220 Z" fill="#abcdcd"/>
+        <path d="M0 175 C160 130 330 120 520 160 C700 196 860 128 1040 120 C1210 112 1320 150 1440 140 L1440 220 L0 220 Z" fill="#afc7b6"/>
+        <path d="M0 205 C240 180 480 176 720 196 C960 214 1200 186 1440 196 L1440 220 L0 220 Z" fill="#ffffff"/>
+      </svg>
+      <div class="tw-hero__inner">
+        <p class="tw-eyebrow">BC Children’s Hospital Centre for Mindfulness</p>
+        <h1>C&amp;W Campus Tree Walk</h1>
+        <p class="tw-lede">Fourteen publicly accessible trees wrap around the BC Children’s &amp; Women’s campus. Follow the numbered stops, and when you reach each tree, take a moment to be present and observe it. Is there anything interesting you can see?</p>
+      </div>
+    </header>
+
+    <section class="tw-map" aria-label="3D map of the tree walk">
+      <div class="tw-map__stage" id="stage">
+        <canvas id="map-canvas" aria-hidden="true"></canvas>
+        <div class="tw-labels" id="labels"></div>
+        <div class="tw-loading" id="loading" role="status">
+          <span>Loading the map…</span>
+          <div class="tw-loading__bar"><div id="loading-fill"></div></div>
+        </div>
+        <div class="tw-map__controls">
+          <button type="button" class="tw-btn tw-btn--small" id="btn-overview">Whole walk</button>
+        </div>
+        <p class="tw-map__hint" id="hint">Drag to move · pinch or scroll to zoom · two fingers to turn</p>
+      </div>
+    </section>
+
+    <main class="tw-chapters">
+      <h2 class="tw-chapters__title">The 14 stops</h2>
+      <ol class="tw-list" id="chapters"></ol>
+      <p class="tw-note">Please be mindful of other people in the space and of potential hazards. Have fun!</p>
+    </main>
+
+    <footer class="tw-footer">
+      <p>Tree guide by Oliver McDermott, UBC Urban Forestry Student.</p>
+      <p><a href="https://centreformindfulness.kelty.link/">BC Children’s Hospital Centre for Mindfulness</a></p>
+    </footer>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
