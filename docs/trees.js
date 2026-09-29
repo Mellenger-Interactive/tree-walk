@@ -19,6 +19,7 @@ export const TREES = [
   },
   {
     stop: 2,
+    view: { theta: 2.45, phi: 1.08, zoom: 1.25 },   // from the north-east, clear of the building
     name: "Cherry blossom tree",
     latin: "Prunus serrulata",
     origin: "Japan, China, Korea",
@@ -48,6 +49,7 @@ export const TREES = [
   },
   {
     stop: 4,
+    view: { theta: 3.3, phi: 1.1, zoom: 1.0 },      // from the north, along the path
     name: "Copper beech",
     latin: "Fagus sylvatica ‘Purpurea’",
     origin: "Europe",
@@ -63,6 +65,7 @@ export const TREES = [
   },
   {
     stop: 5,
+    view: { theta: 3.14, phi: 1.2, zoom: 1.0 },     // from the north, between the two buildings
     name: "Deodar cedar",
     latin: "Cedrus deodara",
     origin: "Western Himalayas",
@@ -105,6 +108,7 @@ export const TREES = [
   },
   {
     stop: 8,
+    view: { theta: 1.52, phi: 1.2, zoom: 1.1 },     // from the east, stops 9–12 behind
     name: "Juniper",
     latin: "Juniperus sp.",
     origin: "North America",
@@ -165,6 +169,7 @@ export const TREES = [
   },
   {
     stop: 12,
+    view: { theta: 0, phi: 1.2, zoom: 0.95 },       // from the south, alongside stop 11
     name: "Norway spruce",
     latin: "Picea abies",
     origin: "Northern and Central Europe",

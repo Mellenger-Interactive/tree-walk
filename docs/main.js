@@ -29,8 +29,9 @@ for (const t of TREES) {
   const observe = t.observe.map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join('');
   const fun = t.fun.map(p => `<p>${p}</p>`).join('');
   const link = t.link ? `<p><a href="${t.link.href}" target="_blank" rel="noopener">${t.link.label}</a></p>` : '';
-  const prev = TREES.find(x => x.stop === t.stop - 1);
-  const next = TREES.find(x => x.stop === t.stop + 1);
+  // The walk is a loop: the first and last stops link to each other.
+  const prev = TREES.find(x => x.stop === t.stop - 1) ?? (t.stop === TREES[0].stop ? TREES.at(-1) : null);
+  const next = TREES.find(x => x.stop === t.stop + 1) ?? (t.stop === TREES.at(-1).stop ? TREES[0] : null);
 
   li.innerHTML = `
     <button class="tw-chapter__head" type="button" aria-expanded="false" aria-controls="body-${t.stop}">
@@ -244,9 +245,14 @@ function stepFlight(now) {
   requestRender();
 }
 
+// Every stop lands on the same view however you get there (map label, list, next/back).
+// Stops can set `view: { theta, phi, zoom }` in trees.js to change it (e.g. to keep a
+// building out of the way); otherwise they use the "Whole walk" heading.
 function flyToTree(tree) {
-  const radius = THREE.MathUtils.clamp(tree.height * 2.6, 32, 90);
-  flyTo(new THREE.Vector3(tree.base.x, tree.groundY + tree.height * 0.35, tree.base.z), radius, 0.95);
+  const v = TREES.find(t => t.stop === tree.object.userData.tour_stop)?.view ?? {};
+  const radius = THREE.MathUtils.clamp(tree.height * 2.6, 32, 90) * (v.zoom ?? 1);
+  flyTo(new THREE.Vector3(tree.base.x, tree.groundY + tree.height * 0.35, tree.base.z),
+    radius, v.phi ?? 0.95, v.theta ?? 0);
 }
 
 let overview = null;   // { target, radius }
