@@ -6,3 +6,8 @@ tree pictures/
 # Blender source files stay local
 *.blend
 *.blend[0-9]*
+
+# Non-code source material stays local (shared drive), not in git
+osm/
+treetour_marker_coords.csv
+tree tour revised.pdf

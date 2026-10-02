@@ -13,13 +13,9 @@ docs/                          the web viewer (static site)
   trees.js                     the 14 stops: names, features to observe, fun facts
   style.css
   models/map.glb               the campus map with all 14 trees (exported from Blender)
-osm/map.osm                    OpenStreetMap extract the base map was built from
-treetour_marker_coords.csv     the 14 stops as x, y metres from a fixed local origin
-tree tour revised.pdf          source text for the tree guide
-3d_tiles/                      placeholder for Google 3D Tiles (empty)
 ```
 
-Not in git (kept local, see below): the Blender `.blend` files in `source/`, and the on-site reference photos in `tree pictures/`.
+The repo holds code and the one built model the site needs. Everything else is kept local in the team's shared drive and gitignored: the Blender `.blend` files (`source/`), the OpenStreetMap extract (`osm/map.osm`), the stop coordinates (`treetour_marker_coords.csv`), the tree guide source (`tree tour revised.pdf`), and the on-site reference photos (`tree pictures/`).
 
 ## Run the viewer locally
 
@@ -60,7 +56,7 @@ Blender (.blend, source of truth)  →  export map.glb  →  Three.js viewer in 
 
 ### Blender files
 
-`.blend` files are intentionally **not committed** (see `.gitignore`); they are large and live in the team's shared drive. If you need to change a model, get the latest files from the Design Exploration shared drive, edit in Blender 5.x, and export `map.glb` into `docs/models/`.
+Source files (`.blend`, the OSM extract, the coordinates CSV, reference photos, and the guide PDF) are intentionally **not committed** (see `.gitignore`). They live in the Design Exploration shared drive. To change a model, get the latest files from there, edit in Blender 5.x, and export `map.glb` into `docs/models/`.
 
 ## Design goals
 

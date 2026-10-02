@@ -14,20 +14,18 @@ Mostly Blender modeling. A plain Three.js viewer already exists in `docs/` and w
 
 - `docs/` the static web viewer: `index.html`, `main.js`, `trees.js`, `style.css`, `models/map.glb`.
 - `source/` Blender sources (`source/trees/<species>_lowpoly.blend`, `source/map/map_v*.blend`). **Gitignored**, local only.
-- `osm/map.osm` OSM extract the base map came from.
-- `treetour_marker_coords.csv` the 14 stops in local metres.
-- `tree pictures/` and `Claude outputs/` are gitignored local reference/scratch. Do not commit them.
+- Gitignored, local only (live in the shared drive): `source/`, `osm/map.osm` (OSM extract the base map came from), `treetour_marker_coords.csv` (the 14 stops in local metres), `tree tour revised.pdf` (tree guide source), `tree pictures/`, and `Claude outputs/`. Do not commit them.
 
 ## Hard rules
 
 - **Ask before** adding dependencies, adding multi-MB binaries, or restructuring folders.
 - The viewer is vanilla Three.js loaded from a CDN import map (pinned version in `docs/index.html`). No bundler or `package.json` unless the user approves.
-- Do not commit `.blend`, `.blend1`, `.DS_Store`, `tree pictures/`, or `Claude outputs/`. They are in `.gitignore`; keep it that way.
+- **The repo is code only**, plus `docs/models/map.glb`, which the viewer needs. Do not commit `.blend`/`.blend1`, `osm/`, the coordinates CSV, the guide PDF, `tree pictures/`, `Claude outputs/`, or `.DS_Store`. They are in `.gitignore`; keep it that way, and ask before adding any other non-code file.
 - `docs/models/map.glb` is build output (~8 MB). Re-export from Blender rather than hand-editing. Ask before changing it.
 
 ## Coordinates and orientation
 
-1 Blender unit = 1 m, Z-up, local origin lat 49.24435997, lon -123.12417984. Stops are `x_m, y_m` from that origin in `treetour_marker_coords.csv`. **Never move the origin.** Three.js is Y-up; the swap happens at export/import, not in the source files.
+1 Blender unit = 1 m, Z-up, local origin lat 49.24435997, lon -123.12417984. Stops are `x_m, y_m` from that origin in `treetour_marker_coords.csv` (local file, not in git). **Never move the origin.** Three.js is Y-up; the swap happens at export/import, not in the source files.
 
 ## Model style (trees)
 
@@ -55,7 +53,7 @@ Blender is the source of truth. Export `.glb` Y-up, +Z forward, modifiers and tr
 - No auto-spin or aggressive camera motion. Respect `prefers-reduced-motion`.
 - Users must be able to jump straight to a stop from the list, not only fly there manually.
 - Phone first: thumb-reachable controls, readable labels, fast first paint. Do not block first paint on loading the whole map.
-- Tree guide text comes from Oliver McDermott's guide (`tree tour revised.pdf`). Do not rewrite facts without the user's say-so.
+- Tree guide text comes from Oliver McDermott's guide (`tree tour revised.pdf`, local file). Do not rewrite facts without the user's say-so.
 
 ## Working in Blender
 
