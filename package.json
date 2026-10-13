@@ -1,0 +1,9 @@
+{
+  "name": "tree-walk",
+  "private": true,
+  "description": "C&W Campus Tree Walk: 3D viewer and slider (static site in docs/)",
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.mjs"
+  }
+}

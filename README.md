@@ -13,6 +13,7 @@ docs/                          the web viewer (static site)
   trees.js                     the 14 stops: names, features to observe, fun facts
   style.css
   models/map.glb               the campus map with all 14 trees (exported from Blender)
+  slider/                      option 2: card slider (Swiper, CDN) with audio players and a detail panel
 ```
 
 The repo holds code and the one built model the site needs. Everything else is kept local in the team's shared drive and gitignored: the Blender `.blend` files (`source/`), the OpenStreetMap extract (`osm/map.osm`), the stop coordinates (`treetour_marker_coords.csv`), the tree guide source (`tree tour revised.pdf`), and the on-site reference photos (`tree pictures/`).
@@ -22,12 +23,12 @@ The repo holds code and the one built model the site needs. Everything else is k
 The viewer is plain HTML and JavaScript (ES modules), so it needs a local web server rather than opening the file directly:
 
 ```bash
-python3 -m http.server 8000 --directory docs
+npm run dev
 ```
 
 Then open <http://localhost:8000>. To check it on a phone, open the same address from your computer's local network IP. Please test on a real phone, not just a resized desktop window.
 
-Three.js (v0.170.0) is loaded from a CDN through an import map in `index.html`. There is no build step, bundler, or `package.json`.
+Three.js (v0.170.0) is loaded from a CDN through an import map in `index.html`. There is no build step or bundler; `package.json` only holds the `npm run dev` script (`dev-server.mjs`, no dependencies).
 
 ## The 14 stops
 

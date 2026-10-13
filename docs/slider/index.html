@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tree Walk | Centre for Mindfulness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+  <link rel="stylesheet" href="slider.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11.1.14/swiper-element-bundle.min.js"></script>
+</head>
+<body>
+  <!-- Embed: copy this <section> plus slider.css and slider.js into the host page. -->
+  <section class="tw-walk" aria-labelledby="tw-walk-title">
+    <div class="tw-walk__head">
+      <h2 class="tw-walk__title" id="tw-walk-title">Tree Walk</h2>
+      <p class="tw-walk__intro">14 trees around the BC Children’s &amp; Women’s campus. Listen at each stop, then walk on.</p>
+    </div>
+
+    <div class="tw-walk__list">
+      <div class="tw-walk__clip">
+        <swiper-container class="tw-walk__gallery" init="false"></swiper-container>
+      </div>
+      <button type="button" class="tw-walk__arrow tw-walk__arrow--prev" aria-label="Previous trees">
+        <svg width="41" height="41" viewBox="0 0 41 41" fill="none" aria-hidden="true"><path d="M21.4609 8.96875L32.9922 20.5L21.4609 32.0312M31.3906 20.5L8.00781 20.5" stroke="currentColor" stroke-width="3.84" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="tw-walk__arrow tw-walk__arrow--next" aria-label="Next trees">
+        <svg width="41" height="41" viewBox="0 0 41 41" fill="none" aria-hidden="true"><path d="M21.4609 8.96875L32.9922 20.5L21.4609 32.0312M31.3906 20.5L8.00781 20.5" stroke="currentColor" stroke-width="3.84" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <script type="module" src="slider.js"></script>
+</body>
+</html>

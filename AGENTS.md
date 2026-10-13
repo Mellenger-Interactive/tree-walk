@@ -19,7 +19,7 @@ Mostly Blender modeling. A plain Three.js viewer already exists in `docs/` and w
 ## Hard rules
 
 - **Ask before** adding dependencies, adding multi-MB binaries, or restructuring folders.
-- The viewer is vanilla Three.js loaded from a CDN import map (pinned version in `docs/index.html`). No bundler or `package.json` unless the user approves.
+- The viewer is vanilla Three.js loaded from a CDN import map (pinned version in `docs/index.html`). No bundler. `package.json` exists only for the zero-dependency `npm run dev` script; ask before adding dependencies.
 - **The repo is code only**, plus `docs/models/map.glb`, which the viewer needs. Do not commit `.blend`/`.blend1`, `osm/`, the coordinates CSV, the guide PDF, `tree pictures/`, `Claude outputs/`, or `.DS_Store`. They are in `.gitignore`; keep it that way, and ask before adding any other non-code file.
 - `docs/models/map.glb` is build output (~8 MB). Re-export from Blender rather than hand-editing. Ask before changing it.
 
@@ -62,7 +62,7 @@ Use the Blender connection on the user's machine. Do not hand the user scripts t
 ## Local check
 
 ```bash
-python3 -m http.server 8000 --directory docs
+npm run dev
 ```
 
 Open `http://localhost:8000`. Test on a real phone when the change affects touch, layout, or performance.
