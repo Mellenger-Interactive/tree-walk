@@ -1,4 +1,5 @@
-// Route map data, generated from source/map/map_v8.blend (top-down orthographic render,
+// Route map data. Image: top-down orthographic render of docs/models/map.glb with the 3D viewer’s
+// lighting (Three.js), frame matched to the Blender export below. Positions: from source/map/map_v8.blend (top-down orthographic render,
 // 1600x1200, saved as img/route-map.webp). Coordinates are pixels in that image.
 // Regenerate from Blender if the map or the tour path changes; don't hand-edit.
 
