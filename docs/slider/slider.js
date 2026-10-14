@@ -3,6 +3,7 @@
 // that stop's player shows "Audio coming soon".
 
 import { TREES } from "../trees.js";
+import { ROUTE_MAP as RM } from "./route-map.js";
 
 const root = document.querySelector(".tw-walk");
 const gallery = root.querySelector(".tw-walk__gallery");
@@ -20,6 +21,49 @@ const ARROW = '<svg viewBox="0 0 41 41" fill="none" aria-hidden="true"><path d="
 const PLAY = '<svg class="tw-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></svg>';
 const PAUSE = '<svg class="tw-i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></svg>';
 const CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+
+const PIN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="currentColor"/></svg>';
+
+// Route map: Blender base image + loop, stops and labels drawn as SVG (sharp at any size).
+// view "card" = a 900-unit-wide window centred on the stop; "full" = the whole campus.
+function routeMap(stop, view = "full") {
+  const [sx, sy] = RM.stops[stop];
+  const next = neighbours(stop).next.stop;
+  let vb = [0, 0, RM.width, RM.height];
+  const k = view === "full" ? 1.6 : 1; // bigger marks when the whole campus is shown
+  if (view === "card") {
+    const w = 900, h = Math.round(w * 0.55);
+    const x = Math.min(Math.max(sx - w / 2, 0), RM.width - w);
+    const y = Math.min(Math.max(sy - h / 2, 0), RM.height - h);
+    vb = [Math.round(x), Math.round(y), w, h];
+  }
+  const stopsSorted = Object.entries(RM.stops).sort(([a], [b]) => (+a === next) - (+b === next)); // next last
+  const dotsAll = stopsSorted.map(([s, [x, y]]) => {
+    s = +s;
+    if (s === stop) return "";
+    const isNext = s === next;
+    // "Next" label sits above the stop, or on the side away from this stop's pin when they're close
+    let lx = x, ly = y - 34 * k;
+    const dx = x - sx, dy = y - sy, d = Math.hypot(dx, dy);
+    if (isNext && d < 140 * k) { lx = x + (dx / d) * 50 * k; ly = y + (dy / d) * 50 * k; }
+    if (isNext && ly < 34 * k) ly = y + 44 * k; // near the top edge: put the label below instead
+    return `<g class="tw-rm__stop${isNext ? " is-next" : ""}"><circle cx="${x}" cy="${y}" r="${(isNext ? 20 : 14) * k}"/>${isNext ? `<text x="${Math.round(lx)}" y="${Math.round(ly)}" font-size="${30 * k}">Next</text>` : ""}</g>`;
+  });
+  const dots = dotsAll.slice(0, -1).join(""), nextDot = dotsAll[dotsAll.length - 1];
+  const fs = 34 * (k > 1 ? 1.35 : 1);
+  const labels = Object.entries(RM.labels).map(([name, [x, y]]) => {
+    const half = name.length * fs * 0.29 + 8; // rough half-width of the text, keeps labels inside the frame
+    x = Math.min(Math.max(x, vb[0] + half), vb[0] + vb[2] - half);
+    return `<text class="tw-rm__label" x="${Math.round(x)}" y="${y}" font-size="${fs}">${esc(name)}</text>`;
+  }).join("");
+  return `<svg class="tw-rm" viewBox="${vb.join(" ")}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <image href="${RM.src}" width="${RM.width}" height="${RM.height}"/>
+    <path class="tw-rm__loop-casing" d="${RM.path}"/><path class="tw-rm__loop" d="${RM.path}"/>
+    ${dots}${labels}
+    <g class="tw-rm__here"><circle cx="${sx}" cy="${sy}" r="${36 * k}"/><text x="${sx}" y="${sy}" font-size="${40 * k}">${stop}</text></g>
+    ${nextDot}
+  </svg>`;
+}
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -48,6 +92,12 @@ ordered.forEach((t, i) => {
     <article class="tw-card" id="stop-${t.stop}" aria-labelledby="tw-name-${t.stop}">
       <div class="tw-card__media" data-open="${t.stop}">
         <img class="tw-card__photo" src="img/stop-${pad(t.stop)}.webp" alt="" loading="${i < 4 ? "eager" : "lazy"}" decoding="async">
+        <div class="tw-card__map" role="img" aria-label="Campus map with stop ${t.stop} marked on the walking loop">${routeMap(t.stop, "card")}</div>
+        <button type="button" class="tw-card__swap" aria-pressed="false" aria-label="Show stop ${t.stop} on the campus map"
+          style="--photo:url(img/stop-${pad(t.stop)}.webp)">
+          <span class="tw-card__swap-thumb" aria-hidden="true"></span>
+          <span class="tw-card__swap-label">${PIN_ICON}<span>Map</span></span>
+        </button>
       </div>
       <div class="tw-card__body">
         <p class="tw-card__stop">Stop ${t.stop} <span class="tw-visually-hidden">of ${total}</span></p>
@@ -176,6 +226,8 @@ function renderPanel(stop) {
       <h2 class="tw-panel__name" id="tw-panel-name">${esc(t.name)}</h2>
       <p class="tw-panel__meta"><i>${esc(t.latin)}</i>${t.origin ? ` · From ${esc(t.origin)}` : ""}</p>
       ${playerHTML(t)}
+      <h3 class="tw-panel__h">Where to find it</h3>
+      <div class="tw-panel__map" role="img" aria-label="Campus map showing stop ${t.stop} on the walking loop, with the next stop, ${neighbours(t.stop).next.stop}, marked">${routeMap(t.stop, "full")}</div>
       ${t.observe?.length ? `
       <h3 class="tw-panel__h">What to look for</h3>
       <dl class="tw-panel__observe">
@@ -184,6 +236,8 @@ function renderPanel(stop) {
       ${t.fun?.length ? `
       <h3 class="tw-panel__h">Did you know?</h3>
       ${t.fun.map((p) => `<p class="tw-panel__fact">${esc(p)}</p>`).join("")}` : ""}
+      ${t.link?.href ? `
+      <p class="tw-panel__link"><a href="${esc(t.link.href)}" target="_blank" rel="noopener">${esc(t.link.label || "Read more")}<span class="tw-visually-hidden"> (opens in a new tab)</span> <span aria-hidden="true">↗</span></a></p>` : ""}
       ${stepsHTML(t, "tw-panel__nav")}
     </div>`;
   panel.dataset.stop = stop;
@@ -219,6 +273,16 @@ root.addEventListener("click", (e) => {
     const stop = Number(step.dataset.go);
     if (panel.contains(step)) { renderPanel(stop); swiper.slideTo(ordered.findIndex((t) => t.stop === stop)); panel.querySelector(".tw-panel__close").focus(); history.replaceState(null, "", `#stop-${stop}`); }
     else goTo(stop, { focus: true });
+    return;
+  }
+  const swap = e.target.closest(".tw-card__swap");
+  if (swap) {
+    const card = swap.closest(".tw-card");
+    const on = card.classList.toggle("is-map");
+    const stop = card.id.replace("stop-", "");
+    swap.setAttribute("aria-pressed", on);
+    swap.setAttribute("aria-label", on ? `Show photo of stop ${stop}` : `Show stop ${stop} on the campus map`);
+    swap.querySelector(".tw-card__swap-label span").textContent = on ? "Photo" : "Map";
     return;
   }
   const open = e.target.closest("[data-open]");

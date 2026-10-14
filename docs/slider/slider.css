@@ -6,6 +6,7 @@
   --tw-text: #737476;
   --tw-card: #f2f2f6;
   --tw-track: #d9d9e0;
+  --tw-orange: #f68b1f; /* tour path colour, same as the 3D viewer */
   --tw-gutter: 40px;
   font-family: Avenir, "Nunito Sans", system-ui, sans-serif;
   font-size: 16px;
@@ -176,3 +177,58 @@ html.tw-lock { overflow: hidden; }
 /* Only the last card has a link: back to the start of the loop */
 .tw-card__step--restart { margin-left: auto; }
 .tw-card__more { margin-bottom: 0; }
+
+/* Optional "read more" link from trees.js (e.g. stop 10) */
+.tw-panel__link { margin: 4px 0 0; }
+.tw-panel__link a { font-weight: 700; color: var(--tw-blue); text-decoration: underline; text-underline-offset: 3px; }
+.tw-panel__link a:hover { text-decoration-thickness: 2px; }
+.tw-panel__link a:focus-visible { outline: 3px solid var(--tw-blue); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Route map (Blender base + SVG loop, stops, labels) ---------- */
+.tw-rm { display: block; width: 100%; height: 100%; font-family: inherit; }
+.tw-rm__loop-casing { fill: none; stroke: rgba(255,255,255,.85); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.tw-rm__loop { fill: none; stroke: var(--tw-orange); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.tw-rm__label {
+  font-weight: 700; fill: #4b4c4e; text-anchor: middle; dominant-baseline: middle;
+  stroke: rgba(255,255,255,.9); stroke-width: 8px; paint-order: stroke; stroke-linejoin: round;
+}
+.tw-rm__stop circle { fill: #fff; stroke: var(--tw-blue); stroke-width: 6; }
+.tw-rm__stop.is-next circle { fill: rgba(255,255,255,.25); stroke-dasharray: 10 6; stroke-width: 7; }
+.tw-rm__stop text {
+  font-weight: 800; fill: var(--tw-blue); text-anchor: middle; dominant-baseline: middle;
+  stroke: #fff; stroke-width: 8px; paint-order: stroke; stroke-linejoin: round;
+}
+.tw-rm__here circle { fill: var(--tw-blue); stroke: #fff; stroke-width: 8; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); }
+.tw-rm__here text { font-weight: 800; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+
+/* Card: photo / map swap */
+.tw-card__map { position: absolute; inset: 0; visibility: hidden; background: #e2eecf; }
+.tw-card.is-map .tw-card__map { visibility: visible; }
+.tw-card.is-map .tw-card__photo { visibility: hidden; }
+.tw-card__swap {
+  position: absolute; right: 8px; bottom: 8px; z-index: 2;
+  width: 56px; height: 42px; padding: 0; border: 2px solid #fff; border-radius: 10px; overflow: hidden;
+  background: #e2eecf; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.tw-card__swap:focus-visible { outline: 3px solid var(--tw-blue); outline-offset: 2px; }
+.tw-card__swap-thumb { position: absolute; inset: 0; background: url(img/route-map.webp) center 40% / cover no-repeat; }
+.tw-card.is-map .tw-card__swap-thumb { background: var(--photo) center 25% / cover no-repeat; }
+.tw-card__swap-label {
+  position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; gap: 2px;
+  padding: 1px 0; font-size: 10px; line-height: 14px; font-weight: 700; color: #fff; background: rgba(0, 114, 188, .92);
+}
+.tw-card__swap-label svg { width: 10px; height: 10px; }
+
+/* Panel: full campus map */
+.tw-panel__map { aspect-ratio: 4 / 3; margin-bottom: 28px; border-radius: 14px; overflow: hidden; background: #e2eecf; }
+
+/* Desktop with a mouse: each arrow stays invisible until the pointer is over its own spot.
+   A slightly larger invisible hover zone (::before) makes it easy to find.
+   Keyboard focus still shows it. Phones/tablets keep the arrows visible. */
+@media (min-width: 1024px) and (hover: hover) {
+  .tw-walk__arrow { opacity: 0; transition: opacity .2s ease; }
+  .tw-walk__arrow::before { content: ""; position: absolute; inset: -24px -16px; }
+  .tw-walk__arrow:hover,
+  .tw-walk__arrow:focus-visible { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .tw-walk__arrow { transition: none; } }
