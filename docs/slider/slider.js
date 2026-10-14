@@ -56,7 +56,10 @@ ordered.forEach((t, i) => {
         </h3>
         ${playerHTML(t)}
         <button type="button" class="tw-card__more" data-open="${t.stop}" aria-haspopup="dialog">More about this tree</button>
-        ${stepsHTML(t, "tw-card__nav")}
+        ${i === total - 1 ? `
+        <nav class="tw-card__nav" aria-label="Stop navigation">
+          <button type="button" class="tw-card__step tw-card__step--restart" data-go="${ordered[0].stop}">Back to stop ${ordered[0].stop} <span aria-hidden="true">↺</span></button>
+        </nav>` : ""}
       </div>
     </article>`;
   gallery.appendChild(slide);
