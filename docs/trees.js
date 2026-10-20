@@ -7,6 +7,7 @@ export const TREES = [
     name: "London plane",
     latin: "Platanus × acerifolia",
     origin: "England",
+    audio: "audio/stop-01.m4a",
     observe: [
       ["Bark", "Flakes off in pieces and is a cream colour, making it look like camouflage for a cappuccino."],
       ["Leaves", "Resemble maple leaves, which is often what it is misidentified as."],

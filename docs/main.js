@@ -29,6 +29,9 @@ for (const t of TREES) {
 
   const observe = t.observe.map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join('');
   const fun = t.fun.map(p => `<p>${p}</p>`).join('');
+  const audio = t.audio
+    ? `<audio class="tw-listen" controls preload="metadata" src="${t.audio}" aria-label="Audio guide: ${t.name}"></audio>`
+    : '';
   const link = t.link ? `<p><a href="${t.link.href}" target="_blank" rel="noopener">${t.link.label}</a></p>` : '';
   // The walk is a loop: the first and last stops link to each other.
   const prev = TREES.find(x => x.stop === t.stop - 1) ?? (t.stop === TREES[0].stop ? TREES.at(-1) : null);
@@ -44,6 +47,7 @@ for (const t of TREES) {
       <span class="tw-chevron" aria-hidden="true"></span>
     </button>
     <div class="tw-chapter__body" id="body-${t.stop}" hidden>
+      ${audio}
       <p class="tw-origin"><strong>Origin:</strong> ${t.origin}</p>
       <h3>Features to observe</h3>
       <ul class="tw-observe">${observe}</ul>
@@ -71,7 +75,11 @@ for (const t of TREES) {
 
 let activeStop = null;
 
-function closeAll() {
+function closeAll(keepStop = null) {
+  // Stop any audio that is playing, unless we're just re-selecting its own stop.
+  for (const [stop, { li }] of chapters) {
+    if (stop !== keepStop) li.querySelectorAll('audio').forEach(a => a.pause());
+  }
   for (const { li, head, body } of chapters.values()) {
     li.classList.remove('is-open');
     head.setAttribute('aria-expanded', 'false');
@@ -87,7 +95,7 @@ function closeAll() {
 function select(stop, { scroll = false, fly = true } = {}) {
   const ch = chapters.get(stop);
   if (!ch) return;
-  closeAll();
+  closeAll(stop);
   activeStop = stop;
   ch.li.classList.add('is-open');
   ch.head.setAttribute('aria-expanded', 'true');
