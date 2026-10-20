@@ -43,7 +43,12 @@
           <div class="tw-loading__bar"><div id="loading-fill"></div></div>
         </div>
         <div class="tw-map__controls">
-          <button type="button" class="tw-btn tw-btn--small" id="btn-overview">Whole walk</button>
+          <button type="button" class="tw-btn tw-btn--icon" id="btn-overview" aria-label="Zoom out to the whole walk" title="Whole walk">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z"/>
+              <path d="M9 4v13.5M15 6.5V20"/>
+            </svg>
+          </button>
         </div>
         <p class="tw-map__hint" id="hint">Drag to move · pinch or scroll to zoom · two fingers to turn</p>
       </div>
