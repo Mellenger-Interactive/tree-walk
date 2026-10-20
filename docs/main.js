@@ -29,9 +29,10 @@ for (const t of TREES) {
 
   const observe = t.observe.map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join('');
   const fun = t.fun.map(p => `<p>${p}</p>`).join('');
+  // Every stop shows the player; stops without a recording yet get an empty (inert) one.
   const audio = t.audio
     ? `<audio class="tw-listen" controls preload="metadata" src="${t.audio}" aria-label="Audio guide: ${t.name}"></audio>`
-    : '';
+    : `<audio class="tw-listen" controls aria-label="Audio guide for ${t.name}: coming soon"></audio>`;
   const link = t.link ? `<p><a href="${t.link.href}" target="_blank" rel="noopener">${t.link.label}</a></p>` : '';
   // The walk is a loop: the first and last stops link to each other.
   const prev = TREES.find(x => x.stop === t.stop - 1) ?? (t.stop === TREES[0].stop ? TREES.at(-1) : null);
