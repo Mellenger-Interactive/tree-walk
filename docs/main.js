@@ -6,6 +6,7 @@ import { TREES } from './trees.js';
 const MODEL_URL = 'models/map.glb';
 const RING_RADIUS = 2.5;                       // matches the gap cut in the tour path
 const OVERVIEW_PHI = 0.72;                     // overview tilt from straight down, radians
+const OVERVIEW_CENTER = new THREE.Vector3(-9.5, 0, 32.5);   // overview look-at point, metres (Y-up)
 const BOUNDS = { minX: -265, maxX: 273, minZ: -219, maxZ: 231 };   // ground extent, metres
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -146,6 +147,9 @@ const ring = new THREE.Mesh(
   new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
+    polygonOffset: true,       // pull toward the camera so roads and paths never cover the ring
+    polygonOffsetFactor: -4,
+    polygonOffsetUnits: -4,
     uniforms: { uColor: { value: new THREE.Color('#f68b1f') } },
     vertexShader: /* glsl */`
       varying vec2 vUv;
@@ -257,9 +261,9 @@ function flyToTree(tree) {
 
 let overview = null;   // { target, radius }
 function computeOverview() {
-  const box = new THREE.Box3();
-  for (const t of trees.values()) box.expandByPoint(t.base);
-  const center = box.getCenter(new THREE.Vector3());
+  // Centre on the campus itself (not the box around the stops), so the whole map
+  // sits centred in the frame on first open and on "Whole walk".
+  const center = OVERVIEW_CENTER.clone();
   // Find the closest distance at which every stop (and its label) fits in view.
   const probe = camera.clone();
   const pts = [...trees.values()].flatMap(t => [t.base, t.top]);
@@ -362,18 +366,24 @@ new GLTFLoader().load(
     const ground = [];
     root.traverse(o => { if (o.isMesh && !isTreePart(o) && !o.name.startsWith('BLD_')) ground.push(o); });
 
+    // Ground meshes can have flipped faces; ray-test both sides so we find the true surface.
+    const sides = ground.map(m => m.material.side);
+    ground.forEach(m => { m.material.side = THREE.DoubleSide; });
     for (const o of treeObjects) {
       const box = new THREE.Box3().setFromObject(o);
       const base = o.getWorldPosition(new THREE.Vector3());
       raycaster.set(new THREE.Vector3(base.x, 100, base.z), new THREE.Vector3(0, -1, 0));
-      const g = raycaster.intersectObjects(ground, false)[0];
-      const groundY = g ? g.point.y : 0;
+      // Highest ground under the tree (roads and paths sit just above the terrain).
+      const hits = raycaster.intersectObjects(ground, false);
+      const groundY = hits.length ? Math.max(...hits.map(h => h.point.y)) : 0;
       const height = box.max.y - groundY;
       trees.set(o.userData.tour_stop, {
         object: o, base, groundY, height,
         top: new THREE.Vector3(base.x, box.max.y + 1.5, base.z),
       });
     }
+
+    ground.forEach((m, i) => { m.material.side = sides[i]; });
 
     // Static scene: skip per-frame matrix work.
     root.traverse(o => { o.matrixAutoUpdate = false; });
