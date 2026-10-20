@@ -1,6 +1,6 @@
 // Tree Walk slider. Stop content comes from ../trees.js (shared with the 3D viewer).
-// Audio: drop files in ./audio/ as stop-01.mp3 … stop-14.mp3. Until a file exists,
-// that stop's player shows "Audio coming soon".
+// Audio: a stop opts in with `audio: "audio/stop-NN.m4a"` in ../trees.js (same field the 3D map uses);
+// the file lives in docs/audio/. Stops without it show "Audio coming soon".
 
 import { TREES } from "../trees.js";
 import { ROUTE_MAP as RM } from "./route-map.js";
@@ -162,7 +162,9 @@ function player(stop) {
   audio.addEventListener("error", () => { p.unavailable = true; paintAll(); });
   ["loadedmetadata", "timeupdate", "play", "pause"].forEach((ev) => audio.addEventListener(ev, paintAll));
   audio.addEventListener("ended", () => { audio.currentTime = 0; paintAll(); });
-  audio.src = `audio/stop-${pad(stop)}.mp3`;
+  const file = byStop.get(stop)?.audio;      // path relative to docs/
+  if (file) audio.src = `../${file}`;
+  else p.unavailable = true;
   players.set(stop, p);
 
   function paint(wrap) {
@@ -170,10 +172,16 @@ function player(stop) {
     const bar = wrap.querySelector(".tw-audio__bar");
     const time = wrap.querySelector(".tw-audio__time");
     if (p.unavailable) {
+      // Placeholder: looks like a live player at 0:00, but is inert ("coming soon" for screen readers only)
       wrap.classList.add("is-unavailable");
       btn.disabled = true;
       btn.setAttribute("aria-label", "Audio coming soon");
-      time.textContent = "Audio coming soon";
+      bar.disabled = true;
+      bar.value = 0;
+      bar.style.setProperty("--tw-pct", "0%");
+      bar.setAttribute("aria-label", "Audio coming soon");
+      time.textContent = "0:00 / 0:00";
+      time.setAttribute("aria-hidden", "true");
       return;
     }
     const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;

@@ -11,7 +11,7 @@ const types = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript",
   ".css": "text/css", ".json": "application/json", ".glb": "model/gltf-binary",
   ".webp": "image/webp", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml",
-  ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".wav": "audio/wav",
+  ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".aac": "audio/aac", ".wav": "audio/wav",
 };
 
 createServer(async (req, res) => {
@@ -24,7 +24,17 @@ createServer(async (req, res) => {
       file = join(file, "index.html");
     }
     const body = await readFile(file);
-    res.writeHead(200, { "Content-Type": types[extname(file)] || "application/octet-stream", "Cache-Control": "no-store" });
+    const headers = { "Content-Type": types[extname(file)] || "application/octet-stream", "Cache-Control": "no-store", "Accept-Ranges": "bytes" };
+    // Range requests let the browser seek in audio (GitHub Pages supports these too)
+    const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+    if (m) {
+      const start = m[1] ? Number(m[1]) : Math.max(body.length - Number(m[2]), 0);
+      const end = m[1] && m[2] ? Math.min(Number(m[2]), body.length - 1) : body.length - 1;
+      if (start > end || start >= body.length) return res.writeHead(416, { "Content-Range": `bytes */${body.length}` }).end();
+      res.writeHead(206, { ...headers, "Content-Range": `bytes ${start}-${end}/${body.length}`, "Content-Length": end - start + 1 });
+      return res.end(body.subarray(start, end + 1));
+    }
+    res.writeHead(200, { ...headers, "Content-Length": body.length });
     res.end(body);
   } catch {
     res.writeHead(404, { "Content-Type": "text/plain" }).end("Not found");

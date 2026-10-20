@@ -68,29 +68,37 @@ body { margin: 0; background: #fff; }
 .tw-card__name { margin: 0 0 16px; font-size: 18px; line-height: 1.2; font-weight: 700; color: var(--tw-text); }
 
 /* Audio player */
-.tw-audio { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-.tw-audio__play {
-  flex: none; width: 44px; height: 44px; border-radius: 50%; border: 0;
-  display: grid; place-items: center; background: var(--tw-blue); color: #fff; cursor: pointer;
+/* Audio player: grey pill like the browser's native player (and the 3D map's) */
+.tw-audio {
+  --tw-audio-bg: #e7e7ec;          /* on the grey cards */
+  --tw-audio-ink: #1f1f1f;
+  display: flex; align-items: center; gap: 6px;
+  height: 48px; padding: 0 14px 0 6px; margin-bottom: 20px;
+  background: var(--tw-audio-bg); border-radius: 999px; color: var(--tw-audio-ink);
 }
-.tw-audio__play:focus-visible { outline: 3px solid var(--tw-blue); outline-offset: 2px; }
-.tw-audio__play svg { width: 18px; height: 18px; }
+.tw-audio__play {
+  flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%;
+  display: grid; place-items: center; background: transparent; color: inherit; cursor: pointer;
+}
+.tw-audio__play:hover { background: rgba(0,0,0,.07); }
+.tw-audio__play:focus-visible { outline: 3px solid var(--tw-blue); outline-offset: 0; }
+.tw-audio__play svg { width: 16px; height: 16px; }
 .tw-audio__play .tw-i-pause { display: none; }
 .tw-audio.is-playing .tw-i-play { display: none; }
 .tw-audio.is-playing .tw-i-pause { display: block; }
-.tw-audio__main { flex: 1; min-width: 0; }
+.tw-audio__main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+.tw-audio__time { order: -1; flex: none; font-size: 13px; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tw-audio__bar {
-  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 4px; margin: 6px 0;
+  -webkit-appearance: none; appearance: none; display: block; flex: 1; min-width: 40px; width: 100%; height: 4px; margin: 0;
   border-radius: 2px; cursor: pointer;
-  background: linear-gradient(var(--tw-blue), var(--tw-blue)) 0 / var(--tw-pct, 0%) 100% no-repeat, var(--tw-track);
+  background: linear-gradient(var(--tw-audio-ink), var(--tw-audio-ink)) 0 / var(--tw-pct, 0%) 100% no-repeat, rgba(0,0,0,.22);
 }
-.tw-audio__bar::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--tw-blue); border: 0; }
-.tw-audio__bar::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--tw-blue); border: 0; }
-.tw-audio__time { font-size: 14px; line-height: 20px; }
-/* No audio file yet */
-.tw-audio.is-unavailable .tw-audio__play { background: var(--tw-track); color: #fff; cursor: not-allowed; }
-.tw-audio.is-unavailable .tw-audio__bar { display: none; }
-.tw-audio.is-unavailable .tw-audio__time { font-weight: 700; }
+.tw-audio__bar::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--tw-audio-ink); border: 0; }
+.tw-audio__bar::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--tw-audio-ink); border: 0; }
+.tw-audio__bar:focus-visible { outline: 3px solid var(--tw-blue); outline-offset: 4px; }
+/* Placeholder player: same look as a live one, just inert */
+.tw-audio.is-unavailable .tw-audio__play { cursor: default; background: transparent; }
+.tw-audio.is-unavailable .tw-audio__bar { cursor: default; }
 
 /* Previous / next stop */
 .tw-card__nav { display: flex; justify-content: space-between; gap: 8px; margin-top: auto; }
@@ -162,7 +170,7 @@ html.tw-lock { overflow: hidden; }
 .tw-panel__body { padding: 24px 24px 32px; }
 .tw-panel__name { margin: 0 0 4px; font-size: 28px; line-height: 1.2; font-weight: 700; color: var(--tw-blue); }
 .tw-panel__meta { margin: 0 0 20px; font-size: 14px; }
-.tw-panel .tw-audio { padding: 12px; margin-bottom: 28px; background: var(--tw-card); border-radius: 14px; }
+.tw-panel .tw-audio { --tw-audio-bg: #f1f1f4; margin-bottom: 28px; }   /* lighter grey on the white panel */
 .tw-panel__h { margin: 0 0 12px; font-size: 18px; line-height: 1.2; font-weight: 700; color: var(--tw-text); }
 .tw-panel__observe { margin: 0 0 28px; display: grid; gap: 12px; }
 .tw-panel__observe div { padding-left: 12px; border-left: 3px solid var(--tw-blue); }

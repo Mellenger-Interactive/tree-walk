@@ -12,3 +12,6 @@ fixed tree photos/
 osm/
 treetour_marker_coords.csv
 tree tour revised.pdf
+
+# Raw audio from the client stays local; web-ready copies go in docs/audio/
+/audio/
